@@ -1,0 +1,31 @@
+
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="row">
+        <div class="col-md-12">
+          <div class="card card-success">
+            <div class="card-header">
+              <h3 class="card-title">General</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success shadow">
+    <h3>🎉 Reflection submitted successfully!</h3>
+    <p>Your reflection and growth plan have been saved.</p>
+    <a href="{% url 'add_reflection' %}" class="btn btn-primary mt-3">Add Another Reflection</a>
+  </div>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        
+      </div>
+
+
+
+
+
+{% endblock content %}

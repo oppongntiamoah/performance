@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="row">
+        <div class="col-md-12">
+          <div class="card card-success">
+            <div class="card-header">
+              <h3 class="card-title">General</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                {% csrf_token %}
+
+                {% for domain, form in domain_forms %}
+                    <h4>{{ domain.name }}</h4>
+                    {{ form|crispy }}
+                {% endfor %}
+
+                {% if editable_growthplans %}
+
+                <h4>Editable Growth Plans</h4>
+                {{ growthplan_formset.management_form }}
+                {% for form in growthplan_formset %}
+                    <div class="growth-plan-form">
+                    {{ form|crispy }}
+                    {% if form.instance.pk %}
+                        <label>Delete? {{ form.DELETE }}</label>
+                    {% endif %}
+                    </div>
+                {% endfor %}
+                {% endif %}
+
+                {% if locked_growthplans %}
+                    <h4>Locked Growth Plans (cannot edit — already observed)</h4>
+                    {% for gp in locked_growthplans %}
+                    <div class="card p-2 mb-2 border">
+                        <strong>{{ gp.goal_statement }}</strong><br>
+                        {{ gp.academic_year }} | {{ gp.date }} <br>
+                        Components: {{ gp.components_addressed.all|join:", " }} <br>
+                        Indicators: {{ gp.indicators_of_success }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+
+
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        
+      </div>
+
+
+
+
+
+{% endblock content %}

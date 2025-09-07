@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-3">Vice Principal Dashboard</h2>
+
+  {% if reflections %}
+    <table class="table table-bordered table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Teacher</th>
+          <th>Domains</th>
+          <th>Growth Plan(s)</th>
+          <th>HOD Observation</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for reflection in reflections %}
+          <tr>
+            <td>{{ reflection.teacher.user.get_full_name }}</td>
+            <td>
+              {% for domain in reflection.domains.all %}
+                <span class="badge bg-primary">{{ domain.name }}</span>
+              {% endfor %}
+            </td>
+            <td>
+              {% for gp in reflection.growthplan_set.all %}
+                <span class="badge bg-info">{{ gp.title }}</span><br>
+              {% endfor %}
+            </td>
+            <td>
+              {% for gp in reflection.growthplan_set.all %}
+                {% if gp.observation and gp.observation.hod_comment %}
+                  <p><em>{{ gp.title }}</em>: {{ gp.observation.hod_comment }}</p>
+                {% endif %}
+              {% endfor %}
+            </td>
+            <td>
+              <a href="{% url 'reflection_detail' reflection.pk %}" class="btn btn-sm btn-outline-secondary">
+                Review
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="alert alert-warning">
+      No reflections with HOD feedback found.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

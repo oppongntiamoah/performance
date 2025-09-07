@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+psycopg2 = "*"
+xhtml2pdf = "*"
+django-formtools = "*"
+crispy-bootstrap5 = "*"
+django-crispy-forms = "*"
+django-import-export = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"

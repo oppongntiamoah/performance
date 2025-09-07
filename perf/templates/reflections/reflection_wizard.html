@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="row">
+        <div class="col-md-12">
+          <div class="card card-success">
+            <div class="card-header">
+              <h3 class="card-title">General</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                  {% csrf_token %}
+
+                    {{ wizard.management_form }}
+                    <h4 class="mb-3">
+                      Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}:
+                      {% if wizard.steps.current|slice:":7" == "domain_" %}
+                        Domain Reflection
+                      {% else %}
+                        Growth Plan
+                      {% endif %}
+                    </h4>
+
+                    {{ wizard.form|crispy }}
+
+                    <div class="d-flex justify-content-between mt-4">
+                      {% if wizard.steps.prev %}
+                        <button name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="btn btn-secondary">
+                          Previous
+                        </button>
+                      {% endif %}
+                      <button type="submit" class="btn btn-primary">
+                        {% if wizard.steps.last %}Finish{% else %}Next{% endif %}
+                      </button>
+                    </div>
+
+                </form>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        
+      </div>
+
+
+
+
+
+{% endblock content %}
+
+
+{% block js %}
+
+<script>
+$(function () {
+  // In Django Form Wizard, each step’s fields are prefixed by the step name.
+  // e.g. "domain_3-strengths" and "domain_3-growths"
+  var prefix = "{{ wizard.form.prefix|escapejs }}";
+
+  // Select the two checkbox groups by their full (prefixed) names
+  var $strengths = $("input[name='" + prefix + "-strengths']");
+  var $growths   = $("input[name='" + prefix + "-growths']");
+
+  function applyExclusion() {
+    // enable everything first
+    $strengths.prop("disabled", false);
+    $growths.prop("disabled", false);
+
+    // for every checked Strength, uncheck+disable the matching Growth
+    $strengths.filter(":checked").each(function () {
+      var val = this.value;
+      $growths.filter(function () { return this.value === val; })
+              .prop("checked", false)
+              .prop("disabled", true);
+    });
+
+    // for every checked Growth, uncheck+disable the matching Strength
+    $growths.filter(":checked").each(function () {
+      var val = this.value;
+      $strengths.filter(function () { return this.value === val; })
+                .prop("checked", false)
+                .prop("disabled", true);
+    });
+  }
+
+  // Initial pass (handles pre-checked values)
+  applyExclusion();
+
+  // Re-apply whenever either group changes
+  $(document).on("change",
+    "input[name='" + prefix + "-strengths'], input[name='" + prefix + "-growths']",
+    applyExclusion
+  );
+});
+</script>
+{% endblock %}

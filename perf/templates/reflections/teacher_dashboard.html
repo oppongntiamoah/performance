@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}Teacher Dashboard{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="info-box">
+      <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+      <div class="info-box-content">
+        <span class="info-box-text">Total Reflections</span>
+        <span class="info-box-number">
+          {{ total_reflections }}
+        </span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
+
+      <div class="info-box-content">
+        <span class="info-box-text">Domains Covered</span>
+        <span class="info-box-number">{{ domains_covered }}</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+
+  <!-- fix for small devices only -->
+  <div class="clearfix hidden-md-up"></div>
+
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+
+      <div class="info-box-content">
+        <span class="info-box-text">Strengths</span>
+        <span class="info-box-number">{{ strengths_count }}</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+  <div class="col-12 col-sm-6 col-md-3">
+    <div class="info-box mb-3">
+      <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+
+      <div class="info-box-content">
+        <span class="info-box-text">Growth Areas</span>
+        <span class="info-box-number">{{ growths_count }}</span>
+      </div>
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+  <!-- /.col -->
+</div>
+<!-- /.row -->
+
+
+<div class="row">
+  <!-- Left col -->
+  <section class="col-md-12">
+    <!-- Custom tabs (Charts with tabs)-->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">
+          <i class="fas fa-chart-pie mr-1"></i>
+          Top Strengths
+        </h3>
+        
+      </div><!-- /.card-header -->
+      <div class="card-body">
+       <canvas id="strengthChart" ></canvas>
+      </div><!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+  </section>
+  <!-- /.Left col -->
+</div>
+
+
+<div class="row">
+  
+  <section class="col-md-12">
+
+    <!-- Map card -->
+    <div class="card">
+      <div class="card-header border-0">
+        <h3 class="card-title">
+          Top Growth Needs
+        </h3>
+      </div>
+      <div class="card-body">
+        <canvas id="growthChart"></canvas>
+      </div>
+      <!-- /.card-body-->
+    </div>
+    <!-- /.card -->
+  </section>
+  <!-- right col -->
+</div>
+
+{% endblock %}
+
+{% block css %}
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock css %}
+
+{% block js %}
+
+<script>
+    const strengthCtx = document.getElementById('strengthChart').getContext('2d');
+    const growthCtx = document.getElementById('growthChart').getContext('2d');
+
+    const strengthChart = new Chart(strengthCtx, {
+        type: 'bar',
+        data: {
+            labels: [{% for s in top_strengths %}'{{ s.name }}',{% endfor %}],
+            datasets: [{
+                label: 'Count',
+                data: [{% for s in top_strengths %}{{ s.count }},{% endfor %}],
+                backgroundColor: 'rgba(75, 192, 192, 0.6)'
+            }]
+        }
+    });
+
+    const growthChart = new Chart(growthCtx, {
+        type: 'bar',
+        data: {
+            labels: [{% for g in top_growths %}'{{ g.name }}',{% endfor %}],
+            datasets: [{
+                label: 'Count',
+                data: [{% for g in top_growths %}{{ g.count }},{% endfor %}],
+                backgroundColor: 'rgba(255, 99, 132, 0.6)'
+            }]
+        }
+    });
+</script>
+
+{% endblock js %}

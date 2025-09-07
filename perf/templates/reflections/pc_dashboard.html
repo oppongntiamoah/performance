@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Small boxes (Stat box) -->
+<div class="row">
+  <!-- Total Teachers -->
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-info">
+      <div class="inner">
+        <h3>{{ total_teachers }}</h3>
+        <p>Total Teachers (All Departments)</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-person-stalk"></i>
+      </div>
+      <a href="{% url "department_members" %}" class="small-box-footer">View All Staff <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+
+  <!-- Reflections Submitted -->
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-success">
+      <div class="inner">
+        <h3>{{ total_reflections }}</h3>
+        <p>Reflections Submitted</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-clipboard"></i>
+      </div>
+      <a href="{% url "reflections_list" %}" class="small-box-footer">View All Reflections <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+
+  <!-- Growth Plans -->
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-warning">
+      <div class="inner">
+        <h3>{{ completed_growth_plans }}</h3>
+        <p>Growth Plans Created</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-ios-gear"></i>
+      </div>
+      <a href="#" class="small-box-footer">View Growth Plans <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+
+  <!-- Observations -->
+  <div class="col-lg-3 col-6">
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h3>{{ obs_completed }}</h3>
+        <p>Observation(s) Completed</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-eye"></i>
+      </div>
+      <a href="{% url "reflections_list" %}" class="small-box-footer">Review Observations <i class="fas fa-arrow-circle-right"></i></a>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Most Common Strengths -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header border-transparent">
+        <h3 class="card-title">Most Common Strengths (School-wide)</h3>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table m-0">
+            <thead>
+              <tr>
+                <th>Domain</th>
+                <th>Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in strength_counts %}
+              <tr>
+                <td>{{ s.domain__name }}</td>
+                <td>{{ s.total }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="2">No strengths yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Most Common Growth Areas -->
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header border-transparent">
+        <h3 class="card-title">Most Common Growth Areas (School-wide)</h3>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table m-0">
+            <thead>
+              <tr>
+                <th>Domain</th>
+                <th>Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for g in growth_counts %}
+              <tr>
+                <td>{{ g.domain__name }}</td>
+                <td>{{ g.total }}</td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="2">No growth areas yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Teacher Reflections -->
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header border-transparent">
+        <h3 class="card-title">Latest Teacher Reflections (All Departments)</h3>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table m-0">
+            <thead>
+              <tr>
+                <th>Teacher</th>
+                <th>Department</th>
+                <th>Date</th>
+                <th>Growth Plan?</th>
+                <th>Observation?</th>
+                <th>View</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for reflection in reflections %}
+              <tr>
+                <td>{{ reflection.teacher.full_name }}</td>
+                <td>{{ reflection.teacher.department }}</td>
+                <td>{{ reflection.date_created|date:"M d, Y" }}</td>
+                <td>
+                  {% if reflection.growth_plans.exists %}
+                    ✅
+                  {% else %}
+                    ❌
+                  {% endif %}
+                </td>
+                <td>
+                  {% if reflection.growth_plans.first.observation %}
+                    ✅
+                  {% else %}
+                    ⏳
+                  {% endif %}
+                </td>
+                <td><a href="{% url 'reflection_detail' reflection.id %}" class="btn btn-sm btn-primary">Open</a></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="6">No reflections yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card-footer clearfix">
+        <a href="{% url "add_reflection" %}" class="btn btn-sm btn-info float-left">Add New Reflection</a>
+        <a href="{% url "reflections_list" %}" class="btn btn-sm btn-secondary float-right">View All Reflections</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
