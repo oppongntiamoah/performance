@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1>
+          Growth Plan
+          <small class="text-muted">for {{ growth_plan.reflection.teacher.user.get_full_name }}</small>
+        </h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'teacher_reflections' growth_plan.reflection.teacher.id %}">Reflections</a></li>
+          <li class="breadcrumb-item active">Growth Plan Detail</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+
+      <!-- Left Column: Growth Plan Info -->
+      <div class="col-md-8">
+        <!-- Goal & Details -->
+        <div class="card card-primary card-outline">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-bullseye"></i> Goal & Plan Details</h3>
+          </div>
+          <div class="card-body">
+            <p><strong>Academic Year:</strong> {{ growth_plan.academic_year }}</p>
+            <p><strong>Goal Statement:</strong> {{ growth_plan.goal_statement }}</p>
+            <p><strong>Indicators of Success:</strong> {{ growth_plan.indicators_of_success }}</p>
+            <p><strong>Actions:</strong> {{ growth_plan.actions }}</p>
+            <p><strong>Timelines:</strong> {{ growth_plan.timelines }}</p>
+            <p><strong>Resources:</strong> {{ growth_plan.resources|default:"N/A" }}</p>
+            <p><strong>Evaluator:</strong> {{ growth_plan.evaluator_name }}</p>
+            <p><strong>Date:</strong> {{ growth_plan.date }}</p>
+          </div>
+        </div>
+
+        <!-- Components -->
+        <div class="card card-success card-outline">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-cubes"></i> Components Addressed</h3>
+          </div>
+          <div class="card-body">
+            <ul class="list-group">
+              {% for comp in growth_plan.components_addressed.all %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  {{ comp.name }}
+                  <span class="badge badge-info">{{ comp.domain.name }}</span>
+                </li>
+              {% empty %}
+                <li class="list-group-item text-muted">No components</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Observations -->
+      <div class="col-md-4">
+        <!-- All Comments -->
+        <div class="card card-info card-outline">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-comments"></i> Observations & Comments</h3>
+          </div>
+          <div class="card-body">
+            <p><strong><i class="fas fa-user-tie"></i> HOD:</strong> {{ observation.hod_comment|default:"No comment yet" }}</p>
+            <p><strong><i class="fas fa-chalkboard-teacher"></i> Coordinator:</strong> {{ observation.coordinator_comment|default:"No comment yet" }}</p>
+            <p><strong><i class="fas fa-user-shield"></i> Principal:</strong> {{ observation.prin_comment|default:"No comment yet" }}</p>
+          </div>
+        </div>
+
+        <!-- Comment Form -->
+        {% if can_edit %}
+        <div class="card card-warning card-outline">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-edit"></i> Add / Update Your Comment ({{ role|title }})</h3>
+          </div>
+          <div class="card-body">
+            <form method="post">
+              {% csrf_token %}
+              {% if role == "hod" %}
+                {{ form.hod_comment|as_crispy_field }}
+              {% elif role == "coordinator" %}
+                {{ form.coordinator_comment|as_crispy_field }}
+              {% elif role == "principal" %}
+                {{ form.prin_comment|as_crispy_field }}
+              {% endif %}
+              <button type="submit" class="btn btn-warning btn-block mt-2">
+                <i class="fas fa-save"></i> Save Comment
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+  <a href="{% url 'teacher_reflections' growth_plan.reflection.teacher.id %}" class="btn btn-secondary mt-3">
+    <i class="fas fa-arrow-left"></i> Back to Reflections
+  </a>
+</section>
+{% endblock %}

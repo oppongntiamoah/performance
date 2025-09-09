@@ -33,7 +33,7 @@
               <tr>
                 <td>{{ member.full_name }}</td>
                 <td>{{ member.department.name }}</td>
-                <td><a href="#" class="btn btn-sm btn-primary">View</a></td>
+                <td><a href="{% url "teacher_reflections" member.id %}" class="btn btn-sm btn-primary">View</a></td>
               </tr>
               {% empty %}
               <tr><td colspan="5">No staff found.</td></tr>

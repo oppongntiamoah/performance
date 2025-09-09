@@ -540,3 +540,94 @@ def reflection_edit(request, pk):
             "locked_growthplans": locked_growthplans,  # 🚀 pass read-only ones
         },
     )
+
+
+
+
+# teacher detail page
+
+def teacher_reflections(request, teacher_id):
+    teacher = get_object_or_404(Teacher, id=teacher_id)
+
+    # Get all reflections for this teacher
+    reflections = (
+        SelfReflection.objects.filter(teacher=teacher)
+        .select_related("teacher")
+        .prefetch_related("reflection_domains__strengths", "reflection_domains__growths", "growth_plans")
+        .order_by("-date_created")
+    )
+
+    # === Simple Analysis for HOD ===
+    total_reflections = reflections.count()
+    growth_components = (
+        Component.objects.filter(growth_reflections__reflection__teacher=teacher)
+        .values("name")
+        .annotate(total=Count("id"))
+        .order_by("-total")
+    )
+    strength_components = (
+        Component.objects.filter(strength_reflections__reflection__teacher=teacher)
+        .values("name")
+        .annotate(total=Count("id"))
+        .order_by("-total")
+    )
+
+    context = {
+        "teacher": teacher,
+        "reflections": reflections,
+        "total_reflections": total_reflections,
+        "growth_components": growth_components[:5],  # top 5 growth areas
+        "strength_components": strength_components[:5],  # top 5 strengths
+    }
+    return render(request, "reflections/teacher_reflections.html", context)
+
+
+
+
+@login_required
+def growth_plan_detail(request, pk):
+    growth_plan = get_object_or_404(GrowthPlan, id=pk)
+    teacher = growth_plan.reflection.teacher
+    user_staff = getattr(request.user, "staff", None)
+
+    # Get or create observation record
+    observation, _ = Observation.objects.get_or_create(growth_plan=growth_plan)
+
+    # Determine if user can edit comments
+    can_edit = False
+    role = None
+    if user_staff:
+        if user_staff.is_hod and user_staff.department == teacher.department:
+            can_edit = True
+            role = "hod"
+        elif user_staff.is_pc:  # Program coordinator
+            can_edit = True
+            role = "coordinator"
+        elif user_staff.is_vp:  # Principal
+            can_edit = True
+            role = "principal"
+
+    if request.method == "POST" and can_edit:
+        form = ObservationForm(request.POST, instance=observation)
+        if form.is_valid():
+            # Save only the relevant field for this role
+            obs = form.save(commit=False)
+            if role == "hod":
+                obs.hod_comment = form.cleaned_data["hod_comment"]
+            elif role == "coordinator":
+                obs.coordinator_comment = form.cleaned_data["coordinator_comment"]
+            elif role == "principal":
+                obs.prin_comment = form.cleaned_data["prin_comment"]
+            obs.save()
+            messages.success(request, "✅ Your comment has been saved.")
+            return redirect("growth_plan_detail", pk=growth_plan.id)
+    else:
+        form = ObservationForm(instance=observation)
+
+    return render(request, "reflections/growth_plan_detail.html", {
+        "growth_plan": growth_plan,
+        "observation": observation,
+        "form": form,
+        "can_edit": can_edit,
+        "role": role,
+    })

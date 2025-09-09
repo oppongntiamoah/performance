@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="card card-primary card-outline">
+      <div class="card-header">
+        <h3 class="card-title"><i class="fas fa-book-open"></i> {{teacher}} Reflections</h3>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th style="width: 50px;">#</th>
+              <th><i class="fas fa-calendar-alt"></i> Date</th>
+              <th><i class="fas fa-layer-group"></i> Domains</th>
+              <th><i class="fas fa-star text-success"></i> Strengths</th>
+              <th><i class="fas fa-chart-line text-warning"></i> Growths</th>
+              <th><i class="fas fa-bullseye"></i> Growth Plan(s)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for reflection in reflections %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ reflection.date_created|date:"M d, Y" }}</td>
+              <td>
+                {% for rd in reflection.reflection_domains.all %}
+                  <span class="badge badge-primary">{{ rd.domain.name }}</span>
+                {% empty %}
+                  <em class="text-muted">No domains</em>
+                {% endfor %}
+              </td>
+              <td>
+                {% for rd in reflection.reflection_domains.all %}
+                  {% for s in rd.strengths.all %}
+                    <span class="badge badge-success">{{ s.name }}</span>
+                  {% endfor %}
+                {% empty %}
+                  <em class="text-muted">No strengths</em>
+                {% endfor %}
+              </td>
+              <td>
+                {% for rd in reflection.reflection_domains.all %}
+                  {% for g in rd.growths.all %}
+                    <span class="badge badge-warning text-dark">{{ g.name }}</span>
+                  {% endfor %}
+                {% empty %}
+                  <em class="text-muted">No growths</em>
+                {% endfor %}
+              </td>
+              <td>
+                {% if reflection.growth_plans.all %}
+                  <ul class="list-unstyled mb-0">
+                    {% for gp in reflection.growth_plans.all %}
+                      <li>
+                        <a href="{% url 'growth_plan_detail' gp.id %}" class="text-primary">
+                          <i class="fas fa-file-alt"></i> GP {{ forloop.counter }} ({{ gp.academic_year }})
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% else %}
+                  <em class="text-muted">No growth plans</em>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center text-muted">No reflections found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

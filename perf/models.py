@@ -97,10 +97,10 @@ class Observation(models.Model):
     growth_plan = models.OneToOneField(
         GrowthPlan, on_delete=models.CASCADE, related_name="observation"
     )
-    hod_comment = models.TextField(blank=True, null=True)
+    hod_comment = models.TextField(blank=True, null=True, verbose_name="HOD comment")
     coordinator_comment = models.TextField(blank=True, null=True)
     prin_comment = models.TextField(
-        blank=True, null=True, help_text="Principal / Vice Principal Comment"
+        blank=True, null=True, verbose_name="Vice Principal Comment"
     )
     date_created = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)

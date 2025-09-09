@@ -53,7 +53,7 @@ class GrowthPlanForm(forms.ModelForm):
             "date",
         ]
         widgets = {
-             "academic_year": forms.Select(attrs={"class": "form-control"}),
+            "academic_year": forms.Select(attrs={"class": "form-control"}),
             "goal_statement": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
             "components_addressed": forms.CheckboxSelectMultiple(attrs={"class": "form-check-input"}),
             "indicators_of_success": forms.Textarea(attrs={"class": "form-control", "rows": 3}),

@@ -8,7 +8,8 @@ from .views import (
     growthplan_create,
     growthplan_edit,
     reflection_edit,
-    
+    teacher_reflections,
+    growth_plan_detail,
 )
 from django.shortcuts import render
 from django.contrib.auth import views as auth_views
@@ -38,4 +39,6 @@ urlpatterns = [
     path("gp/<int:reflection_id>/add/", growthplan_create, name="growthplan_create"),
     path("gp/<int:pk>/edit/", growthplan_edit, name="growthplan_edit"),
     # path("<int:pk>/delete/", growthplan_delete, name="growthplan_delete"),
+    path("teacher/<int:teacher_id>/reflections/", teacher_reflections, name="teacher_reflections"),
+    path("gp/<int:pk>/", growth_plan_detail, name="growth_plan_detail"),
 ]

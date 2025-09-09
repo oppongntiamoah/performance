@@ -11,6 +11,7 @@ django-formtools = "*"
 crispy-bootstrap5 = "*"
 django-crispy-forms = "*"
 django-import-export = "*"
+faker = "*"
 
 [dev-packages]
 

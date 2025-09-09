@@ -53,10 +53,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
     
 
-    # 👇 Custom role properties
-    @property
-    def is_student(self):
-        return hasattr(self, 'student')
 
     @property
     def is_staff_user(self):
