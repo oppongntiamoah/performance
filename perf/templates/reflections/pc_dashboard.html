@@ -126,6 +126,88 @@
 </div>
 
 <div class="row">
+  <!-- Left col -->
+  <div class="col-md-6">
+
+    <!-- TABLE: Most Common Component Strengths -->
+    <div class="card">
+      <div class="card-header border-transparent">
+        <h3 class="card-title">Most Common Component Strengths</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table m-0">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Domain</th>
+                <th>Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for s in component_strength_counts %}
+              <tr>
+                <td>{{ s.name }}</td>
+                <td><span class="badge bg-info">{{ s.domain__name }}</span></td>
+                <td><span class="badge bg-success">{{ s.total }}</span></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="3" class="text-center">No strengths yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.table-responsive -->
+      </div>
+      <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+  </div>
+  <!-- /.col -->
+
+  <div class="col-md-6">
+
+    <!-- TABLE: Most Common Component Growth Areas -->
+    <div class="card">
+      <div class="card-header border-transparent">
+        <h3 class="card-title">Most Common Component Growth Areas</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table m-0">
+            <thead>
+              <tr>
+                <th>Component</th>
+                <th>Domain</th>
+                <th>Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for g in component_growth_counts %}
+              <tr>
+                <td>{{ g.name }}</td>
+                <td><span class="badge bg-info">{{ g.domain__name }}</span></td>
+                <td><span class="badge bg-warning text-dark">{{ g.total }}</span></td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="3" class="text-center">No growth areas yet.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.table-responsive -->
+      </div>
+      <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+  </div>
+  <!-- /.col -->
+</div>
+<!-- /.row -->
+
+<div class="row">
   <!-- Teacher Reflections -->
   <div class="col-md-12">
     <div class="card">

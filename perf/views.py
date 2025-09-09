@@ -69,6 +69,22 @@ def dashboard(request):
             .order_by("-total")
         )
 
+        # Strength counts by component
+        component_strength_counts = (
+            Component.objects.filter(strength_reflections__reflection__in=reflections)
+            .values("id", "name", "domain__name")   # include domain for grouping
+            .annotate(total=Count("strength_reflections"))
+            .order_by("-total")
+        )[:5]
+
+        # Growth counts by component
+        component_growth_counts = (
+            Component.objects.filter(growth_reflections__reflection__in=reflections)
+            .values("id", "name", "domain__name")
+            .annotate(total=Count("growth_reflections"))
+            .order_by("-total")
+        )[:5]
+
         context = {
             "hod": hod,
             "department": department,
@@ -84,6 +100,9 @@ def dashboard(request):
             "obs_completed": obs_completed,
             "strength_counts": strength_counts,
             "growth_counts": growth_counts,
+
+            "component_strength_counts": component_strength_counts,
+            "component_growth_counts": component_growth_counts,
         }
 
         return render(request, "reflections/hod_dashboard.html", context)
@@ -135,6 +154,22 @@ def dashboard(request):
             .order_by("-total")
         )
 
+         # Strength counts by component
+        component_strength_counts = (
+            Component.objects.filter(strength_reflections__reflection__in=reflections)
+            .values("id", "name", "domain__name")   # include domain for grouping
+            .annotate(total=Count("strength_reflections"))
+            .order_by("-total")
+        )[:5]
+
+        # Growth counts by component
+        component_growth_counts = (
+            Component.objects.filter(growth_reflections__reflection__in=reflections)
+            .values("id", "name", "domain__name")
+            .annotate(total=Count("growth_reflections"))
+            .order_by("-total")
+        )[:5]
+
         context = {
             "total_teachers": total_teachers,
             "teachers_with_reflections": teachers_with_reflections,
@@ -145,6 +180,10 @@ def dashboard(request):
             "obs_completed": obs_completed,
             "strength_counts": strength_counts,
             "growth_counts": growth_counts,
+            "reflections":reflections,
+
+            "component_strength_counts": component_strength_counts,
+            "component_growth_counts": component_growth_counts,
         }
 
         return render(request, "reflections/pc_dashboard.html", context)
